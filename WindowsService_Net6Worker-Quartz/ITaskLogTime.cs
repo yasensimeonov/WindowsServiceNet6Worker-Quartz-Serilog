@@ -8,7 +8,7 @@ namespace WindowsService_Net6Worker_Quartz
 {
     public interface ITaskLogTime
     {
-        Task DoWork(CancellationToken cancellationToken);
-        Task Execute();
+        Task DoWork(CancellationToken cancellationToken, IConfiguration config);
+        Task Execute(IConfiguration config);
     }
 }
