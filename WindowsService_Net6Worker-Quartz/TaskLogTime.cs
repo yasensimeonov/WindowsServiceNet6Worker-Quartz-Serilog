@@ -33,7 +33,8 @@ namespace WindowsService_Net6Worker_Quartz
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception: " + ex.Message);
+                // Console.WriteLine("Exception: " + ex.Message);
+                logger.LogError(ex, "Error during Task Log Time");                
             }
         }
 
