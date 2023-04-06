@@ -16,12 +16,12 @@ IHostBuilder CreateHostBuilder(string[] args) =>
         .UseWindowsService()
         .ConfigureServices((hostContext, services) =>
         {
-            ConfigureQuartzService(services);
+            ConfigureQuartzService(services, hostContext);
 
             services.AddScoped<ITaskLogTime, TaskLogTime>();
         });
 
-static void ConfigureQuartzService(IServiceCollection services)
+static void ConfigureQuartzService(IServiceCollection services, HostBuilderContext hostContext)
 {
     // Add the required Quartz.NET services
     services.AddQuartz(q =>
@@ -29,17 +29,19 @@ static void ConfigureQuartzService(IServiceCollection services)
         // Use a Scoped container to create jobs.
         q.UseMicrosoftDependencyInjectionJobFactory();
 
-        // Create a "key" for the job
-        var jobKey = new JobKey("Task1");
+        //// Create a "key" for the job
+        //var jobKey = new JobKey("Task1");
 
-        // Register the job with the DI container
-        q.AddJob<TaskInfo>(opts => opts.WithIdentity(jobKey));
+        //// Register the job with the DI container
+        //q.AddJob<TaskInfo>(opts => opts.WithIdentity(jobKey));
 
-        // Create a trigger for the job
-        q.AddTrigger(opts => opts
-            .ForJob(jobKey) // link to the Task1
-            .WithIdentity("Task1-trigger") // give the trigger a unique name
-            .WithCronSchedule("0/10 * * * * ?")); // run every 10 seconds
+        //// Create a trigger for the job
+        //q.AddTrigger(opts => opts
+        //    .ForJob(jobKey) // link to the Task1
+        //    .WithIdentity("Task1-trigger") // give the trigger a unique name
+        //    .WithCronSchedule("0/10 * * * * ?")); // run every 10 seconds
+
+        q.AddJobAndTrigger<TaskInfo>(hostContext.Configuration);
     });
 
     // Add the Quartz.NET hosted service
